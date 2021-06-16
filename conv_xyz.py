@@ -47,6 +47,11 @@ merge_debevec = cv.createMergeDebevec()
 hdr = merge_debevec.process(images, times, response)
 print('hdr image made.')
 
+#中心座標（1865, 1825）, (5500, 1825)
+#半径　1725
+#
+#
+
 #配列の初期化
 matX = np.zeros((3648,7296))
 matY = np.zeros((3648,7296))
@@ -55,18 +60,18 @@ matLens = np.zeros((3648,7296))
 for i in range(3648):
     for j in range(7296):
         if j < 3648:
-            p = 1824 - i
-            q = 1824 - j
+            p = 1825 - i
+            q = 1865 - j
             d = math.sqrt(p*p + q*q)
-            if d < 1744:
+            if d < 1725:
                 matLens[i, j] = 1
             else:
                 matLens[i, j] = 0
         else:
-            p = 1824 - i
-            q = 5472 - j
+            p = 1825 - i
+            q = 5500 - j
             d = math.sqrt(p*p + q*q)
-            if d < 1744:
+            if d < 1725:
                 matLens[i, j] = 1
             else:
                 matLens[i, j] = 0
@@ -87,9 +92,9 @@ BZ = 1.0
 
 
 print('convert RGB to XYZ.')
-matX = RX * hdr[:,:,2] + GX * hdr[:,:,1] + BX * hdr[:,:,0]
-matY = RY * hdr[:,:,2] + GY * hdr[:,:,1] + BY * hdr[:,:,0]
-matZ = RZ * hdr[:,:,2] + GZ * hdr[:,:,1] + BZ * hdr[:,:,0]
+matX = RX * hdr[2] + GX * hdr[1] + BX * hdr[0]
+matY = RY * hdr[2] + GY * hdr[1] + BY * hdr[0]
+matZ = RZ * hdr[2] + GZ * hdr[1] + BZ * hdr[0]
 matX_trim = matX*matLens
 matY_trim = matY*matLens
 matZ_trim = matZ*matLens
