@@ -8,158 +8,131 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import math
+from fractions import Fraction
 
-#幾何平均輝度算出
-def geo_mean(iterable):
-    log_sum = 0
-    cnt_not_zero = 0
-    for a in iterable:
-        if a > 0:
-            log_sum = log_sum + math.log10(a)
-            cnt_not_zero += 1
-    return 10**(log_sum/cnt_not_zero)
+###variables setting ###############
+#image size
+imgH = 3648 
+imgW = 7296
+#fisheye radius
+imgR = 1725
+#fisheye center
+c1_x = 1825
+c1_y = 1825
+c2_x = 5500
+c2_y = 1825
+#conversion matrix
+RX = 133.1042
+GX = 90.39311
+BX = 65.21242
+RY = 72.39415
+GY = 204.0351
+BY = 34.29615
+RZ = 7.149386
+GZ = 41.19635
+BZ = 296.3546
+####################################
+
+#Load images and integration
+def makeHDRimage(path, TH_H, TH_L):
+    #initialize matrix
+    hdr_img = []
+    summed_Rimg = np.zeros((imgH, imgW), dtype='float32')
+    summed_Gimg = np.zeros((imgH, imgW), dtype='float32')
+    summed_Bimg = np.zeros((imgH, imgW), dtype='float32')
+    total_Rimg = np.zeros((imgH, imgW), dtype='int8')
+    total_Gimg = np.zeros((imgH, imgW), dtype='int8')
+    total_Bimg = np.zeros((imgH, imgW), dtype='int8')
     
-#picinfo.csvを読み込んでimageと露光時間を取得
-def loadExposureSeq(path):
-    images = []
-    times = []
+    #Loop for the number of images
     with open(os.path.join(path, 'picInfo.csv')) as f:
         content = f.readlines()
     for line in content:
+        #Load image and EV values
         tokens = line.split(',')
-        images.append(cv.imread(os.path.join(path, tokens[1])))
-        times.append(1/float(tokens[3]))
-    return images, np.asarray(times, dtype=np.float32)
+        img = np.array(Image.open(os.path.join(path, tokens[1])), np.float16)
+        ev = 1/(float(tokens[2])*float(Fraction(tokens[3])))
+        print(tokens[1], 'load image and convert')
+        #Blue ch
+        img_b = np.where( (img[:,:,2]>TH_H) | (img[:,:,2]<TH_L), 0, img[:,:,2] )
+        cnt_b = np.where( (img[:,:,2]>TH_H) | (img[:,:,2]<TH_L), 0, 1 )
+        summed_Bimg = summed_Bimg + ev*img_b
+        total_Bimg  = total_Bimg + cnt_b
+        #Green ch
+        img_g = np.where( (img[:,:,1]>TH_H) | (img[:,:,1]<TH_L), 0, img[:,:,1] )
+        cnt_g = np.where( (img[:,:,1]>TH_H) | (img[:,:,1]<TH_L), 0, 1 )
+        summed_Gimg = summed_Gimg + ev*img_g
+        total_Gimg  = total_Gimg + cnt_g
+        #Red ch
+        img_r = np.where( (img[:,:,0]>TH_H) | (img[:,:,0]<TH_L), 0, img[:,:,0] )
+        cnt_r = np.where( (img[:,:,0]>TH_H) | (img[:,:,0]<TH_L), 0, 1 )
+        summed_Rimg = summed_Rimg + ev*img_r
+        total_Rimg  = total_Rimg + cnt_r
+    #calculating the average value for each pixel
+    summed_Rimg = np.divide(summed_Rimg, total_Rimg, out=np.zeros_like(summed_Rimg), where=total_Rimg!=0)
+    summed_Gimg = np.divide(summed_Gimg, total_Gimg, out=np.zeros_like(summed_Gimg), where=total_Gimg!=0)
+    summed_Bimg = np.divide(summed_Bimg, total_Bimg, out=np.zeros_like(summed_Bimg), where=total_Bimg!=0)
+    hdr_img.append(summed_Bimg)
+    hdr_img.append(summed_Gimg)
+    hdr_img.append(summed_Rimg)
+    return hdr_img
+
+###main()################    
+#input the location of images
 parser = argparse.ArgumentParser(description='Code for High Dynamic Range Imaging tutorial.')
 parser.add_argument('--input', type=str, help='Path to the directory that contains images and exposure times.')
 args = parser.parse_args()
 if not args.input:
     parser.print_help()
     exit(0)
-
 images, times = loadExposureSeq(args.input)
 print('load images done.')
 
-calibrate = cv.createCalibrateDebevec()
-response = calibrate.process(images, times)
+#Load images and integration
+print('making HDR image...')
+hdr = makeHDRimage(args.input, 200, 20)
+print('done.')
 
-merge_debevec = cv.createMergeDebevec()
-hdr = merge_debevec.process(images, times, response)
-print('hdr image made.')
-
-#中心座標（1865, 1825）, (5500, 1825)
-#半径　1725
-#
-#
-
-#配列の初期化
-matX = np.zeros((3648,7296))
-matY = np.zeros((3648,7296))
-matZ = np.zeros((3648,7296))
-matLens = np.zeros((3648,7296))
-for i in range(3648):
-    for j in range(7296):
-        if j < 3648:
-            p = 1825 - i
-            q = 1865 - j
+#initialize matrix
+print('matrix initialize...')
+matX = np.zeros((imgH,imgW), dtype='float32')
+matY = np.zeros((imgH,imgW), dtype='float32')
+matZ = np.zeros((imgH,imgW), dtype='float32')
+#Lens correction
+matLens = np.zeros((imgH,imgW))
+for i in range(imgH):
+    for j in range(imgW):
+         if j < imgW/2:
+            p = c1_y - i
+            q = c1_x - j
             d = math.sqrt(p*p + q*q)
-            if d < 1725:
+            if d < imgR:
                 matLens[i, j] = 1
             else:
                 matLens[i, j] = 0
         else:
-            p = 1825 - i
-            q = 5500 - j
+            p = c2_y - i
+            q = c2_x - j
             d = math.sqrt(p*p + q*q)
-            if d < 1725:
+            if d < imgR:
                 matLens[i, j] = 1
             else:
                 matLens[i, j] = 0
+print('done.')
 
-print('matrix initialize done.')
-
-
-#変換係数
-RX = 1.0
-GX = 1.0
-BX = 1.0
-RY = 1.0
-GY = 1.0
-BY = 1.0
-RZ = 1.0
-GZ = 1.0
-BZ = 1.0
-
-
-print('convert RGB to XYZ.')
+#convert RGB to XYZ
+print('convert RGB...')
 matX = RX * hdr[2] + GX * hdr[1] + BX * hdr[0]
 matY = RY * hdr[2] + GY * hdr[1] + BY * hdr[0]
 matZ = RZ * hdr[2] + GZ * hdr[1] + BZ * hdr[0]
 matX_trim = matX*matLens
 matY_trim = matY*matLens
 matZ_trim = matZ*matLens
-print('convert RGB to XYZ done.')
-#hdr_3 = [hdr[:,:,i] for i in range(3)]
+print('done.')
 
-#tonemap = cv.createTonemap(1.0)
-#ldr = tonemap.process(hdr)
-
-#cv.imwrite(os.path.join(args.input,'ldr.png'), ldr * 255)
-#cv.imwrite(os.path.join(args.input,'hdr.hdr'), hdr)
-print('now saving csv files.')
+#Output csv files
+print('saving csv files...')
 np.savetxt(os.path.join(args.input,'dataX.csv'), matX_trim, delimiter=",", fmt='%f')
 np.savetxt(os.path.join(args.input,'dataY.csv'), matY_trim, delimiter=",", fmt='%f')
 np.savetxt(os.path.join(args.input,'dataZ.csv'), matZ_trim, delimiter=",", fmt='%f')
-print('saving csv files done.')
-
-
-#ヒストグラムファイル名
-h_file = os.path.join(args.input, "hist_L.csv")
-
-fig = plt.figure(figsize=(6,9))
-fig.subplots_adjust(left=0.1, right=0.95, top=0.95, bottom=0.05, hspace=0.10)
-ax1 = fig.add_subplot(211)
-
-mappable0 = ax1.imshow(matY_trim, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
-
-
-#ax1.imshow(matY, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
-
-ax2 = fig.add_subplot(212)
-
-
-n, bins, patches = ax2.hist(matY_trim.flatten(), bins=np.logspace(-3,6,90), color='silver', alpha=0.75)
-ax2.set_xscale('log')
-ax2.set_xlim(1e-3, 1e6)
-ax2.xaxis.set_visible(False)
-ax2.tick_params('x', labelsize = 0)
-ax2.set_yscale('log')
-ax2.set_ylabel('num')
-
-Amean = np.nansum(matY_trim)/(matY_trim.size-np.count_nonzero(matY_trim))  #算術平均輝度の算出
-maxLumi=np.nanmax(matY_trim)
-minLumi=np.nanmin(matY_trim[np.nonzero(matY_trim)])
-Gmean=geo_mean(matY_trim.flatten())
-#ax2.text(1000,1000000,'a-mean = %.2e' % Amean, size=10)
-#ax2.text(1000,310000,'g-mean = %.2e' % Gmean, size=10)
-#ax2.text(1000,100000,'maxLumi = %.2e' % maxLumi, size=10)
-#ax2.text(1000,31000,'minLumi = %.2e' % minLumi, size=10)
-
-pp = fig.colorbar(mappable0, ax = ax2, orientation="horizontal", pad=0)
-pp.set_clim(1e-3, 1e6)
-pp.set_label("Luminance [cd/m2]", fontsize=10)
-
-plt.suptitle(args.input)
-
-with open(h_file, "a") as fileobj:
-    fileobj.write(str(os.path.dirname(args.input)) + ",\n")
-    fileobj.write("算術平均輝度,幾何平均輝度,最大輝度,最小輝度,\n")
-    fileobj.write(str(Amean) + "," + str(Gmean) + "," + str(maxLumi) + "," + str(minLumi) + ",\n")
-    fileobj.write("階級,ピクセル数,\n")
-    for i in range(0, len(bins)):
-        if i == len(bins)-1:
-            fileobj.write(str(bins[i]) + ",-,\n")
-        else:
-            fileobj.write(str(bins[i]) + "," + str(n[i]) + "\n")
-
-plt.show()
+print('done.')
