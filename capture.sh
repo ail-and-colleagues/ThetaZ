@@ -38,7 +38,7 @@ do
 	sleep 0.1	
 	ptpcam -c
 	sleep ${col5}	
-	echo ${col1}.dng,${col1}.ppm,100,${col3} >> /home/pi/ThetaZ/data/${DATE}/picInfo.csv
+	echo ${col1}.dng,${col1}.tiff,100,${col3} >> /home/pi/ThetaZ/data/${DATE}/picInfo.csv
 done < list.csv
 #list.csvの書式
 #１列目　画像No.
