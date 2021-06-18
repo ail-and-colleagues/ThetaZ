@@ -9,8 +9,8 @@ DIRNAME=${1}
 cd ${DIRNAME}
 
 #dcrawによるtiff変換
-dcraw -g 1 1 -W *.DNG
-echo raw to ppm convert done.
+dcraw -v -T -g 1 1 -W *.DNG
+echo raw to tiff convert done.
 
 #作業デレクトリをもとに戻す
 cd ${CDIR}
