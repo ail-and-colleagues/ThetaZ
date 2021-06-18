@@ -31,10 +31,13 @@ BY = 34.29615
 RZ = 7.149386
 GZ = 41.19635
 BZ = 296.3546
+#Range of RGB values to convert
+TH_H = 200
+TH_L = 20
 ####################################
 
 #Load images and integration
-def makeHDRimage(path, TH_H, TH_L):
+def makeHDRimage(path):
     #initialize matrix
     hdr_img = []
     summed_Rimg = np.zeros((imgH, imgW), dtype='float32')
@@ -90,7 +93,7 @@ print('load images done.')
 
 #Load images and integration
 print('making HDR image...')
-hdr = makeHDRimage(args.input, 200, 20)
+hdr = makeHDRimage(args.input)
 print('done.')
 
 #initialize matrix
