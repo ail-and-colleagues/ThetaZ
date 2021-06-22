@@ -1,9 +1,12 @@
 #!/bin/bash
 
+#保存先の親ディレクトリをコマンドライン引数から取得
+DIRNAME=${1}
+
 #保存先ディレクトリの作成
 DATE=`date '+%y%m%d_%H%M%S'`
-mkdir /home/pi/ThetaZ/data/${DATE} 
-chmod 777 /home/pi/ThetaZ/data/${DATE}
+mkdir ${DIRNAME}/${DATE} 
+chmod 777 ${DIRNAME}/${DATE} 
 
 #カメラのアクティベート
 gphoto2 --auto-detect
@@ -38,14 +41,17 @@ do
 	sleep 0.1	
 	ptpcam -c
 	sleep ${col5}	
-	echo ${col1}.dng,${col1}.tiff,100,${col3} >> /home/pi/ThetaZ/data/${DATE}/picInfo.csv
-done < list.csv
+	echo ${col1}.DNG,${col1}.tiff,100,${col3} >> ${DIRNAME}/${DATE}/picInfo.csv
+done < EVlist.csv
 #list.csvの書式
 #１列目　画像No.
 #２列目　ISO感度
 #３列目　シャッタースピード
 #４列目　シャッタースピード（１６進）
 #5列目　画像取得待ち時間（シャッタースピードの２倍程度）
+
+#保存先ディレクトリの書き出し
+echo ${DIRNAME}/${DATE}, >> ${DIRNAME}/dirList.txt
 
 #画像のダウンロード
 ptpcam -G
@@ -55,7 +61,7 @@ sudo chmod 777 *.JPG
 ls *.DNG | awk '{ printf "mv %s %02d.DNG\n", $0, NR }' | sh
 ls *.JPG | awk '{ printf "mv %s %02d.JPG\n", $0, NR }' | sh
 #画像の移動
-mv *.DNG /home/pi/ThetaZ/data/${DATE}/
-mv *.JPG /home/pi/ThetaZ/data/${DATE}/
+mv *.DNG ${DIRNAME}/${DATE}/
+mv *.JPG ${DIRNAME}/${DATE}/
 ptpcam -D
 
