@@ -125,9 +125,9 @@ print('done.')
 
 #convert RGB to XYZ
 print('convert RGB...')
-matX = RX * hdr[2] + GX * hdr[1] + BX * hdr[0]
-matY = RY * hdr[2] + GY * hdr[1] + BY * hdr[0]
-matZ = RZ * hdr[2] + GZ * hdr[1] + BZ * hdr[0]
+matX = hdr[2]
+matY = hdr[1] 
+matZ = hdr[0]
 matX_trim = matX*matLens
 matY_trim = matY*matLens
 matZ_trim = matZ*matLens
@@ -135,7 +135,7 @@ print('done.')
 
 #Output csv files
 print('saving csv files...')
-np.savetxt(os.path.join(args.input,'dataX.csv'), matX_trim, delimiter=",", fmt='%f')
-np.savetxt(os.path.join(args.input,'dataY.csv'), matY_trim, delimiter=",", fmt='%f')
-np.savetxt(os.path.join(args.input,'dataZ.csv'), matZ_trim, delimiter=",", fmt='%f')
+np.savetxt(os.path.join(args.input,'dataR.csv'), matX_trim, delimiter=",", fmt='%f')
+np.savetxt(os.path.join(args.input,'dataG.csv'), matY_trim, delimiter=",", fmt='%f')
+np.savetxt(os.path.join(args.input,'dataB.csv'), matZ_trim, delimiter=",", fmt='%f')
 print('done.')
