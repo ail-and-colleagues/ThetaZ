@@ -10,7 +10,7 @@ chmod 777 ${DIRNAME}/${DATE}
 
 #カメラのアクティベート
 gphoto2 --auto-detect
-sleep 0.1
+sleep 5.0
 #露光モードをマニュアルに変更
 ptpcam --set-property=0x500e --val=0x0001
 sleep 0.1
