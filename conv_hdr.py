@@ -1,40 +1,13 @@
 from __future__ import print_function
 from __future__ import division
 from PIL import Image
-import cv2 as cv
 import numpy as np
 import argparse
+import csv
 import os
-import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
 import math
 from fractions import Fraction
 
-###variables setting ###############
-#image size
-imgH = 3648 
-imgW = 7296
-#fisheye radius
-imgR = 1725
-#fisheye center
-c1_x = 1825
-c1_y = 1825
-c2_x = 5500
-c2_y = 1825
-#conversion matrix
-RX = 133.1042
-GX = 90.39311
-BX = 65.21242
-RY = 72.39415
-GY = 204.0351
-BY = 34.29615
-RZ = 7.149386
-GZ = 41.19635
-BZ = 296.3546
-#Range of RGB values to convert
-TH_H = 200
-TH_L = 20
-####################################
 
 #Load images and integration
 def makeHDRimage(path):
@@ -88,8 +61,41 @@ args = parser.parse_args()
 if not args.input:
     parser.print_help()
     exit(0)
+#Load system setup file
+with open(os.path.join(args.input, 'sysInfo.csv'), 'r') as f:
+    reader = csv.reader(f)
+    line = [row for row in reader]
+#print sysInfo header
+print(line[0])
+print(line[1])
+print(line[2])
+print(line[3]) 
+### variables setting ##############
+#fisheye center
+c1_x = 1825
+c1_y = 1825
+c2_x = 5500
+c2_y = 1825
+#image size
+imgH = int(line[4][1]) 
+imgW = int(line[5][1]) 
+#fisheye radius
+imgR = int(line[6][1]) 
+#conversion matrix
+RX = float(line[7][1]) 
+GX = float(line[8][1]) 
+BX = float(line[9][1]) 
+RY = float(line[10][1]) 
+GY = float(line[11][1]) 
+BY = float(line[12][1]) 
+RZ = float(line[13][1]) 
+GZ = float(line[14][1]) 
+BZ = float(line[15][1]) 
+#Range of RGB values to convert
+TH_H = int(line[16][1]) 
+TH_L = int(line[17][1]) 
+####################################
 
-print('load images done.')
 
 #Load images and integration
 print('making HDR image...')

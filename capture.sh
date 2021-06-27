@@ -42,7 +42,7 @@ do
 	ptpcam -c
 	sleep ${col5}	
 	echo ${col1}.DNG,${col1}.tiff,100,${col3} >> ${DIRNAME}/${DATE}/picInfo.csv
-done < EVlist.csv
+done < ${DIRNAME}/EVlist.csv
 #list.csvの書式
 #１列目　画像No.
 #２列目　ISO感度
@@ -52,6 +52,8 @@ done < EVlist.csv
 
 #保存先ディレクトリの書き出し
 echo ${DIRNAME}/${DATE}, >> ${DIRNAME}/dirList.txt
+#撮影時のsysInfoを画像フォルダにコピー
+cp ${DIRNAME}/sysInfo.csv ${DIRNAME}/${DATE}/sysInfo.csv
 
 #画像のダウンロード
 ptpcam -G
