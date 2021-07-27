@@ -18,7 +18,6 @@ do
 	python3 conv_xyz.py --input ${col1}
 done < ${DIRNAME}/dirList.txt
 
-echo raw to TIFF convert done.
 
 #作業デレクトリをもとに戻す
 cd ${CDIR}

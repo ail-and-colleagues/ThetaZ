@@ -134,6 +134,11 @@ print('convert RGB...')
 matX = RX * hdr[2] + GX * hdr[1] + BX * hdr[0]
 matY = RY * hdr[2] + GY * hdr[1] + BY * hdr[0]
 matZ = RZ * hdr[2] + GZ * hdr[1] + BZ * hdr[0]
+#triming of minmum XYZvalues
+matX = np.where(matX<0.001, 0.001, matX)
+matY = np.where(matY<0.001, 0.001, matY)
+matZ = np.where(matZ<0.001, 0.001, matZ)
+#triming of FElens
 matX_trim = matX*matLens
 matY_trim = matY*matLens
 matZ_trim = matZ*matLens
