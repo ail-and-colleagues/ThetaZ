@@ -45,6 +45,10 @@ print('done')
 matY1 = matY[100:3550,  100:3550]
 matY2 = matY[100:3550, 3775:7225]
 
+#0をNaNで置換
+matY1_n = np.where(matY1>0, matY1, np.nan)
+matY2_n = np.where(matY2>0, matY2, np.nan)
+
 #ヒストグラムファイル名
 h_file = os.path.dirname(args.input) + "/hist_L.csv"
 
@@ -53,8 +57,8 @@ fig.subplots_adjust(left=0.1, right=0.95, top=0.95, bottom=0.05, hspace=0.10)
 ax1 = fig.add_subplot(221)
 ax2 = fig.add_subplot(222)
 
-mappable0 = ax1.imshow(matY1, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
-mappable1 = ax2.imshow(matY2, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
+mappable0 = ax1.imshow(matY1_n, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
+mappable1 = ax2.imshow(matY2_n, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
 
 ax3 = fig.add_subplot(223)
 ax4 = fig.add_subplot(224)
@@ -84,11 +88,11 @@ maxLumi2=np.nanmax(matY2)
 minLumi2=np.nanmin(matY2[np.nonzero(matY2)])
 
 pp1 = fig.colorbar(mappable0, ax = ax3, orientation="horizontal", pad=0)
-pp1.set_clim(1e-3, 1e6)
+#pp1.set_clim(1e-3, 1e6)
 pp1.set_label("Luminance [cd/m2]", fontsize=10)
 
 pp2 = fig.colorbar(mappable0, ax = ax4, orientation="horizontal", pad=0)
-pp2.set_clim(1e-3, 1e6)
+#pp2.set_clim(1e-3, 1e6)
 pp2.set_label("Luminance [cd/m2]", fontsize=10)
 
 #plt.suptitle(args.input)
@@ -104,7 +108,7 @@ with open(h_file, "a") as fileobj:
             fileobj.write(str(bins1[i]) + ",-,\n")
         else:
             fileobj.write(str(bins1[i]) + "," + str(n1[i]) + "\n")
-    
+
     fileobj.write("裏面,\n")
     fileobj.write("算術平均輝度,最大輝度,最小輝度,\n")
     fileobj.write(str(Amean2) + "," + str(maxLumi2) + "," + str(minLumi2) + ",\n")
