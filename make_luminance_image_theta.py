@@ -10,7 +10,7 @@ import cv2
 import math
 import os
 
-
+#20220311aa
 
 def loadLuminanceFile(path):
     matY = np.genfromtxt(
@@ -63,7 +63,7 @@ mappable1 = ax2.imshow(matY2_n, cmap='jet', norm=LogNorm(vmin=1e-3, vmax=1e6))
 ax3 = fig.add_subplot(223)
 ax4 = fig.add_subplot(224)
 
-n1, bins1, patches1 = ax3.hist(matY1.flatten(), bins=np.logspace(-3,6,90), color='silver', alpha=0.75)
+n1, bins1, patches1 = ax3.hist(matY1.flatten(), bins=np.logspace(-3,6,100), color='silver', alpha=0.75)
 ax3.set_xscale('log')
 ax3.set_xlim(1e-3, 1e6)
 ax3.xaxis.set_visible(False)
@@ -71,7 +71,7 @@ ax3.tick_params('x', labelsize = 0)
 ax3.set_yscale('log')
 ax3.set_ylabel('num')
 
-n2, bins2, patches2 = ax4.hist(matY2.flatten(), bins=np.logspace(-3,6,90), color='silver', alpha=0.75)
+n2, bins2, patches2 = ax4.hist(matY2.flatten(), bins=np.logspace(-3,6,100), color='silver', alpha=0.75)
 ax4.set_xscale('log')
 ax4.set_xlim(1e-3, 1e6)
 ax4.xaxis.set_visible(False)
@@ -79,11 +79,11 @@ ax4.tick_params('x', labelsize = 0)
 ax4.set_yscale('log')
 ax4.set_ylabel('num')
 
-Amean1 = np.nansum(matY1)/(np.count_nonzero(matY1))  #算術平均輝度の算出
+Amean1 = np.nansum(matY1)/(np.count_nonzero(matY1>0))  #算術平均輝度の算出
 maxLumi1=np.nanmax(matY1)
 minLumi1=np.nanmin(matY1[np.nonzero(matY1)])
 #Gmean=geo_mean(matY.flatten())
-Amean2 = np.nansum(matY2)/(np.count_nonzero(matY2))  #算術平均輝度の算出
+Amean2 = np.nansum(matY2)/(np.count_nonzero(matY2>0))  #算術平均輝度の算出
 maxLumi2=np.nanmax(matY2)
 minLumi2=np.nanmin(matY2[np.nonzero(matY2)])
 
