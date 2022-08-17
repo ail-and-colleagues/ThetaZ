@@ -1,0 +1,9 @@
+# venv
+.lcept/
+
+# installation files
+gphoto2-updater.sh
+libptp2-1.2.0/
+libusb-0.1.8/
+*.tar.gz
+
