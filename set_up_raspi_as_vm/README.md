@@ -58,15 +58,20 @@ open-vm-tools-desktopは仮想マシンを使いやすくするためのツー�
 
 インストールにはターミナルにて`sudo apt-get install open-vm-tools-desktop`を実行する。特にエラーメッセージが表示されなければ成功。
 
-## ホストOSとraspi_dtpでファイルのやり取りをできるようにする
-
+## USBデバイスを使えるようにする
 一旦raspi_dtpをシャットダウンする。
 
 ![シャットダウン](./assets/2022-08-23%20173647.png)
 
-ホストOSにて、仮想マシンが保存されているフォルダ（ここでは`D:\VM\raspi_dtp`）にある**raspi_dtp.vmx**をテキストエディタで開き、以下の2行を加え保存。
+ホストOSにて、仮想マシンが保存されているフォルダ（ここでは`D:\VM\raspi_dtp`）にある**raspi_dtp.vmx**をテキストエディタで開き、`usb.restrictions.defaultAllow = "False"`となっていれば`="True"`に、該当する行がなければ`usb.restrictions.defaultAllow = "True"`を末尾に加える。
+
+### ホストOSとraspi_dtpでファイルのやり取りをできるようにする
+
+**raspi_dtp.vmx**に以下の2行を加え保存。
 ```
 isolation.tools.copy.disable = "FALSE"
 isolation.tools.paste.disable = "FALSE"
 ```
-raspi_dtpを起動してファイルのコピペができることを確認する。
+
+raspi_dtpを起動し、取り外し可能デバイスの一覧が選択可能になっていること（次図、グレーアウトされていないこと）を確かめる。また、ファイルのコピペができることを確認する。
+![取り外し可能デバイスが選択可能に](./assets/2022-08-24%20150127.png)

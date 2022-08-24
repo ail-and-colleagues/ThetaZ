@@ -27,6 +27,7 @@ Thetaを接続すると次図のようなダイアログが表示され、基本
 >Model: RICOH THETA Z1  
 >  Version: 2.00.1  
 >  ...
+
 が表示されればOK。
 
 なお、USBメモリとしてマウントされている場合は以下のようなエラーが表示される。
@@ -35,51 +36,14 @@ Thetaを接続すると次図のようなダイアログが表示され、基本
 >...  
 
 ### libptp
-Note: 色々試したがlibptp(ptpcam)ではうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)。
+うまく動かず…。
 
-
-```
-sudo apt-get install build-essential
-sudo apt install libusb-dev
-
-
-# sudo apt-get install libusb-1.0-0-dev
-
-
-wget -P . http://sourceforge.net/projects/libptp/files/libptp2/libptp2-1.2.0/libptp2-1.2.0.tar.gz
-tar -xzvf libptp2-1.2.0.tar.gz
-cd libptp2-1.2.0/
-./configure
-make
-sudo make install
-sudo /sbin/ldconfig -v
-```
-
-
-
-#### note
-```
-sudo apt-get install build-essential
-sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code`
-```
-`sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code` causes errors as follows:
+なお、[setup.txt](./docs/setup.txt)にてlibptpのインストール（正確にはソースコードのダウンロード）を行う`sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code` は以下のように接続が拒否される。
 >svn: E170013: Unable to connect to a repository at URL 'svn://svn.code.sf.net/p/libptp/code/trunk'
 >svn: E000111: Can't connect to host 'svn.code.sf.net': Connection refused
 
-Install libptp2 from sources to address the errors.
-
-ref: [RICOH THETA Development on Linux](https://codetricity.github.io/theta-linux/usb_api/)
-
-...but got results as follows under VMware Workstation 16 Player, Ubuntu 22.04.1, and Theta SC2.
-![ptpcam error](./assets/2022-08-22%20183047.png)
+よって、[RICOH THETA Development on Linux](https://codetricity.github.io/theta-linux/usb_api/)を参考に別途libptpを用意することを試行したがうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)。
 
 ## sidenote
-There is a simple python library called PYPy that aims to control cameras with ptp.
-
-[PTPy](https://github.com/Parrot-Developers/sequoia-ptpy)
-
-Unfortunately, Theta SC2 does not work with PTPy (that may relate SC2 doesn't support the USB API officially. The errors noted above also may relate to this).
-
-If the other Theta models work with PTPy, using PTPy will be a more easy way to control.
-
-ref: https://api.ricoh/blog/2021/02/28/summary-of-theta-apis-2020-edition/
+[PTPy](https://github.com/Parrot-Developers/sequoia-ptpy)なるPython向けのlibptp実装もあり。
+ただ、基本がlibptpなので[issue #1: libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)と同様のエラーが起きる。
