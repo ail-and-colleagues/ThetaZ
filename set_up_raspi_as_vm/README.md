@@ -7,15 +7,20 @@
 ## Raspberry Pi Desktopのインストール
 仮想マシンとしてRaspberry Pi Desktop（raspi_dtp）をインストールする。
 
-まず、[ここ](https://www.raspberrypi.com/software/raspberry-pi-desktop/)からRaspiのディスクイメージ **20xx-x-x-raspios-bullseye-i386.iso**をダウンロードする。
+まず、[ここ](https://www.raspberrypi.com/software/raspberry-pi-desktop/)の[Download下のArchive](https://downloads.raspberrypi.org/rpd_x86/images/)からRaspiのディスクイメージ **rpd_x86-2021-01-12/**(2021-01-11-raspios-buster-i386.iso)をダウンロードする。なお、Ricoh Theta USB APIの[ドキュメント](https://codetricity.github.io/theta-linux/usb_api/#hardware-and-os
+)には：
+> Raspberry Pi 3 with Raspian 10, buster. Any version and any model should work.
 
-VMWareにて、「新規仮想マシンの作成」をクリック。ウィザードが立ち上がるので、**インストーラディスクイメージファイル**に先程ダウンロードした**20xx-x-x-raspios-bullseye-i386.iso**を指定して（次図）次へ。
+とあるが、テストではRaspian 11 (bullseye, rpd_x86-2022-07-04/	(2022-07-01-raspios-bullseye-i386.iso))では、Z1、SC2共に適切に動作しなかった。
+
+VMWareにて、「新規仮想マシンの作成」をクリック。ウィザードが立ち上がるので、**インストーラディスクイメージファイル**に先程ダウンロードした**2021-01-11-raspios-buster-i386.iso**を指定して（次図）次へ。
 
 ![インストーラディスクイメージファイルを指定して次へ](./assets/2022-08-23%20111411.png)
-
+図はbullseye、正しくはbuster
 raspi_dtpの場合、OSの種類が自動判別されないので次図のように指定する。
 
 ![OSの指定](./assets/2022-08-23%20111517.png)
+正しくは「その他のLinux 5.xカーネル」で64bitではない
 
 仮想マシンの名前の設定（次図）。場所で指定したフォルダ（ここでは`D:\VM\raspi_dtp`）に複数のファイルが展開されるのでトップレベルのフォルダを指定すること。
 
@@ -29,7 +34,7 @@ raspi_dtpの場合、OSの種類が自動判別されないので次図のよう
 
 ![ハードウェアのカスタマイズ](./assets/2022-08-23%20161121.png)
 
-ホストのスペックによるが少なくとも2GB程度はあったほうが良いかもしれない。余裕があればプロセッサ数も増やすと良い。
+ホストのスペックによるが8GB確保することが推奨されている。余裕があればプロセッサ数も増やすと良い。
 
 ![仮想マシンのメモリを増やす](./assets/2022-08-23%20161217.png)
 
