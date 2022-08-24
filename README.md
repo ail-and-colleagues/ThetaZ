@@ -7,26 +7,62 @@ RICOH　ThetaZ1用の輝度計測システム
 * dcraw
 * opencv ?
 
-Note: Does gphoto2 require a libptp installation? On Ubuntu 22.04.1, gphoto2 can be installed via Ubuntu software without additional libraries.
 
 ## installation
 ### gphoto
+ターミナルより下記コマンドを実行。
 ```
-wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh
-chmod 755 gphoto2-updater.sh
-sudo ./gphoto2-updater.sh
+sudo apt-get install gphoto2
 ```
+Thetaを接続すると次図のようなダイアログが表示され、基本的にはUSBメモリとしてマウントされる模様。
 
-Note: We can install gphoto2 from Ubuntu software.
+![Theta接続時の挙動](/assets/2022-08-24%20101247.png)
+
+ファイルマネージャー（windowでいうエクスプローラー）を開くとUSBメモリとして扱われているので次図のように一方についてマウントを解除する。
+
+![Thetaのマウントと解除する](./assets/2022-08-24%20101557.png)
+
+`gphoto2 --summary`を実行してカメラのサマリ:
+>Manufacturer: Ricoh Company, Ltd.  
+>Model: RICOH THETA Z1  
+>  Version: 2.00.1  
+>  ...
+が表示されればOK。
+
+なお、USBメモリとしてマウントされている場合は以下のようなエラーが表示される。
+>*** エラー ***  
+>An error occurred in the io-library ('USB デバイスと断定できませんでした'):  
+>...  
 
 ### libptp
+Note: 色々試したがlibptp(ptpcam)ではうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](#1)。
+
 
 ```
-sudo apt-get install build essential
+sudo apt-get install build-essential
+sudo apt install libusb-dev
+
+
+# sudo apt-get install libusb-1.0-0-dev
+
+
+wget -P . http://sourceforge.net/projects/libptp/files/libptp2/libptp2-1.2.0/libptp2-1.2.0.tar.gz
+tar -xzvf libptp2-1.2.0.tar.gz
+cd libptp2-1.2.0/
+./configure
+make
+sudo make install
+sudo /sbin/ldconfig -v
+```
+
+
+
+#### note
+```
+sudo apt-get install build-essential
 sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code`
 ```
-
-Note: `sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code` causes errors as follows:
+`sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code` causes errors as follows:
 >svn: E170013: Unable to connect to a repository at URL 'svn://svn.code.sf.net/p/libptp/code/trunk'
 >svn: E000111: Can't connect to host 'svn.code.sf.net': Connection refused
 
@@ -36,7 +72,6 @@ ref: [RICOH THETA Development on Linux](https://codetricity.github.io/theta-linu
 
 ...but got results as follows under VMware Workstation 16 Player, Ubuntu 22.04.1, and Theta SC2.
 ![ptpcam error](./assets/2022-08-22%20183047.png)
-
 
 ## sidenote
 There is a simple python library called PYPy that aims to control cameras with ptp.
