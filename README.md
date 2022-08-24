@@ -35,7 +35,7 @@ Thetaを接続すると次図のようなダイアログが表示され、基本
 >...  
 
 ### libptp
-Note: 色々試したがlibptp(ptpcam)ではうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](#1)。
+Note: 色々試したがlibptp(ptpcam)ではうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](#1) #1。
 
 
 ```
