@@ -11,7 +11,9 @@
 )には：
 > Raspberry Pi 3 with Raspian 10, buster. Any version and any model should work.
 
-とあるが、テストではRaspian 11 (bullseye, rpd_x86-2022-07-04/	(2022-07-01-raspios-bullseye-i386.iso))では、Z1、SC2共に適切に動作しなかった。
+とあるが、~~テストではRaspian 11 (bullseye, rpd_x86-2022-07-04/	(2022-07-01-raspios-bullseye-i386.iso))では、Z1、SC2共に適切に動作しなかった。~~ libptpはRaspian 11 (bullseye)、10 (buster)ともにZ1、SC2が適切に動作せず。gphoto2のほうはRaspian 11 (bullseye)で動作確認できたので、10でも問題ないと思われる。
+
+以下は10 (buster)にてインストールを説明しているが、10 (buster)はvs codeがapt-getでインストールできなかったのでテストは11 (bullseye)で行っている。
 
 VMWareにて、「新規仮想マシンの作成」をクリック。ウィザードが立ち上がるので、**インストーラディスクイメージファイル**に先程ダウンロードした**2021-01-11-raspios-buster-i386.iso**を指定して（次図）次へ。
 
