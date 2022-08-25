@@ -52,13 +52,13 @@ raspu_dtpを再生すると**Debian GNU/Linux boot menu**が表示されるの�
 
 ## open-vm-tools-desktopのインストール
 
-open-vm-tools-desktopは仮想マシンを使いやすくするためのツール。ホストOSとraspi_dtpで間でテキストのコピペができるようになるなど便利なのでインストールしておく。
+open-vm-tools-desktopは仮想マシンを使いやすくするためのツール。ホストOSとraspi_dtpで間でテキストのコピペ・画面サイズの変更ができるようになるなど便利なのでインストールしておく。
 
 作業はTarminalで行う。TarminalはWindowsでいうコマンドプロンプト（Power Shell）。raspi_dtpはじめLinuxでは、GUIでは行えない細かい操作を行うのに用いる。
 
 ![Tarminal起動](./assets/2022-08-23%20171912.png)
 
-インストールにはターミナルにて`sudo apt-get install open-vm-tools-desktop`を実行する。特にエラーメッセージが表示されなければ成功。
+インストールにはターミナルにて`sudo apt-get install open-vm-tools-desktop`を実行する。特にエラーメッセージが表示されなければ成功。再起動後に有効になるはず。
 
 ## USBデバイスを使えるようにする
 一旦raspi_dtpをシャットダウンする。
