@@ -1,6 +1,8 @@
 # ThetaZ
 RICOH　ThetaZ1用の輝度計測システム
 
+Raspberry Pi DesktopをVMWareで仮想マシンとしてセットアップする場合は[set_up_raspi_as_vm](https://github.com/ail-and-colleagues/ThetaZ/blob/refactoring/set_up_raspi_as_vm/README.md)を参考のこと。
+
 ## prerequisites
 * gphoto2
 * ptpcam (libptp): [libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)
