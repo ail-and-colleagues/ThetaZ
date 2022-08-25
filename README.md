@@ -11,7 +11,7 @@ Raspberry Pi DesktopをVMWareで仮想マシンとしてセットアップする
 
 ## installation
 ### gphoto
-`sudo apt-get install gphoto2`でインストールしたgphoto(少なくともlibgphoto<=2.5.27.1)だとshuttersppeedの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
+`sudo apt-get install gphoto2`でインストールしたgphoto(少なくともlibgphoto<=2.5.27.1)だとシャッタースピードの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
 
 まず、必要なものをインストールしておく。
 ```
@@ -66,7 +66,15 @@ Thetaを接続し、`gphoto2 --summary`を実行してカメラのサマリ:
 >  Version: 2.00.1  
 >  ...
 
-が表示されればOK。
+が表示されればOK。シャッタースピードの確認は`gphoto2 --get-config shutterspeed`から行える。以下のように情報が得られることを確認しておく。
+
+>Label: Shutter Speed                                                           
+Readonly: 0  
+Type: RADIO  
+Current: 1/100  
+Choice: 0 1/25000  
+Choice: 1 1/20000  
+...
 
 なお、USBメモリとしてマウントされている場合は以下のようなエラーが表示される。
 >*** エラー ***  
