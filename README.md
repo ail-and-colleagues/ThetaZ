@@ -3,26 +3,62 @@ RICOH　ThetaZ1用の輝度計測システム
 
 ## prerequisites
 * gphoto2
-* ptpcam (libptp)
+* ptpcam (libptp): [libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)
 * dcraw
 * opencv ?
 
-
 ## installation
 ### gphoto
-ターミナルより下記コマンドを実行。
+`sudo apt-get install gphoto2`でインストールしたgphoto(少なくともlibgphoto<=2.5.27.1)だとshuttersppeedの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
+
+まず、必要なものをインストールしておく。
 ```
-sudo apt-get install gphoto2
+sudo apt-get update
+sudo apt-get install libusb-1.0-0-dev libpopt-dev
+sudo apt-get install automake autoconf pkg-config tettext libtool
 ```
-Thetaを接続すると次図のようなダイアログが表示され、基本的にはUSBメモリとしてマウントされる模様。
+#### libgphoto2
+libgphoto2をダウンロード、解凍。
+```
+wget -O "libgphoto2.zip" https://github.com/gphoto/libgphoto2/archive/refs/heads/master.zip .
+unzip ./libgphoto2.zip
+```
 
-![Theta接続時の挙動](/assets/2022-08-24%20101247.png)
+ホームディレクトリにフォルダ**libgphoto2-master**があるので、**camlibs>ptp>config.c**を右クリック>Text Editerで開く。10785行目に：
+```
+{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_PENTAX,  PTP_DTC_UINT64,  get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
+```
+という行がある（Ctrl+Fで検索可）ので、次のように直下に一行足して保存、閉じる。
+```
+{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_PENTAX,  PTP_DTC_UINT64, _get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
+{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_MICROSOFT, PTP_DTC_UINT64, _get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
+```
 
-ファイルマネージャー（windowでいうエクスプローラー）を開くとUSBメモリとして扱われているので次図のように一方についてマウントを解除する。
+ターミナルに戻り以下を実行する。
+```
+cd libgphoto2-master
+autoreconf --install --symlink
+./configure --prefix=/usr/local
+make
+sudo make install
+cd ../
+```
+`ls /usr/local/lib/`し、libgphoto2~で始まるファイルが配置されていればOK。
 
-![Thetaのマウントと解除する](./assets/2022-08-24%20101557.png)
+#### gphoto2
+続いてgphoto2のダウンロード、解凍。
+```
+wget -O "gphoto2.zip" https://github.com/gphoto/gphoto2/archive/refs/heads/master.zip .
+unzip gphoto2.zip
+cd gphoto2-master/
+autoreconf --install --symlink
+./configure PKG_CONFIG_PATH="/usr/local/lib/pkgconfig${PKG_CONFIG_PATH+":${PKG_CONFIG_PATH}"}" --prefix=/usr/local
+make
+sudo make install
+cd ../
+```
 
-`gphoto2 --summary`を実行してカメラのサマリ:
+Thetaを接続し、`gphoto2 --summary`を実行してカメラのサマリ:
 >Manufacturer: Ricoh Company, Ltd.  
 >Model: RICOH THETA Z1  
 >  Version: 2.00.1  
@@ -34,6 +70,15 @@ Thetaを接続すると次図のようなダイアログが表示され、基本
 >*** エラー ***  
 >An error occurred in the io-library ('USB デバイスと断定できませんでした'):  
 >...  
+
+これは、Thetaを接続した際にすると次図のようなダイアログが表示され、USBメモリとしてマウントされてしまった場合。
+
+![Theta接続時の挙動](/assets/2022-08-24%20101247.png)
+
+ファイルマネージャー（windowでいうエクスプローラー）を開くとUSBメモリとして扱われているのが確認できるので、次図のように一方についてマウントを解除する。
+
+![Thetaのマウントと解除する](./assets/2022-08-24%20101557.png)
+
 
 ### libptp
 うまく動かず…。
