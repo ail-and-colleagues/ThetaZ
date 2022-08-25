@@ -16,6 +16,7 @@ sudo ./gphoto2-updater.sh
 
 sudo apt-get install subversion 
 sudo apt-get install libusb-dev
+sudo apt-get install libtool
 sudo svn checkout svn://svn.code.sf.net/p/libptp/code/trunk libptp-code
 cd libptp-code
 
