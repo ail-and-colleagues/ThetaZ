@@ -17,7 +17,7 @@ Raspberry Pi DesktopをVMWareで仮想マシンとしてセットアップする
 ```
 sudo apt-get update
 sudo apt-get install libusb-1.0-0-dev libpopt-dev
-sudo apt-get install automake autoconf pkg-config tettext libtool
+sudo apt-get install automake autoconf pkg-config gettext libtool
 ```
 #### libgphoto2
 libgphoto2をダウンロード、解凍。
