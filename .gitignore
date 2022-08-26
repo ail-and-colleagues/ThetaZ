@@ -1,5 +1,6 @@
 # venv
 .lcept/
+lib/
 
 # installation files
 gphoto2-updater.sh

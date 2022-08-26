@@ -10,8 +10,8 @@ Raspberry Pi DesktopをVMWareで仮想マシンとしてセットアップする
 * opencv ?
 
 ## installation
-### gphoto
-`sudo apt-get install gphoto2`でインストールしたgphoto(少なくともlibgphoto<=2.5.27.1)だとシャッタースピードの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
+### gphoto2
+`sudo apt-get install gphoto2`でインストールしたgphoto2(少なくともlibgphoto<=2.5.27.1)だとシャッタースピードの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[#2 can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
 
 まず、必要なものをインストールしておく。
 ```
@@ -36,7 +36,7 @@ unzip ./libgphoto2.zip
 { N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_MICROSOFT, PTP_DTC_UINT64, _get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
 ```
 
-ターミナルに戻り以下を実行する。
+ターミナルに戻り以下を実行し、ビルド・インストール。
 ```
 cd libgphoto2-master
 autoreconf --install --symlink
@@ -48,7 +48,7 @@ cd ../
 `ls /usr/local/lib/`し、libgphoto2~で始まるファイルが配置されていればOK。
 
 #### gphoto2
-続いてgphoto2のダウンロード、解凍。
+続いてgphoto2のダウンロード、インストール。
 ```
 wget -O "gphoto2.zip" https://github.com/gphoto/gphoto2/archive/refs/heads/master.zip .
 unzip gphoto2.zip
@@ -81,7 +81,7 @@ Choice: 1 1/20000
 >An error occurred in the io-library ('USB デバイスと断定できませんでした'):  
 >...  
 
-これは、Thetaを接続した際にすると次図のようなダイアログが表示され、USBメモリとしてマウントされてしまった場合。
+これは、Thetaを接続した際にUSBメモリとしてマウントされてしまった場合。おそらく次図のようなダイアログが表示される。
 
 ![Theta接続時の挙動](/assets/2022-08-24%20101247.png)
 
