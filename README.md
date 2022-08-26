@@ -11,7 +11,7 @@ Raspberry Pi DesktopをVMWareで仮想マシンとしてセットアップする
 
 ## installation
 ### gphoto2
-`sudo apt-get install gphoto2`でインストールしたgphoto2(少なくともlibgphoto<=2.5.27.1)だとシャッタースピードの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[#2 can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/1)）。
+`sudo apt-get install gphoto2`でインストールしたgphoto2(少なくともlibgphoto<=2.5.27.1)だとシャッタースピードの変更ができないため、自分でソースをビルドしてインストールする必要がある模様（[#2 can not control shutter speed](https://github.com/ail-and-colleagues/ThetaZ/issues/2)）。
 
 まず、必要なものをインストールしておく。
 ```
