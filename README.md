@@ -93,9 +93,9 @@ Choice: 1 1/20000
 
 ## capture
 Theta Z1のgphoto2でのキャプチャバージョンを**capture_gphoto2.sh**として実装。
-gphoto2はカメラ内のファイルを削除する際にフォルダの指定が要る。ひとまず[.sh内で直接指定しているので注意](https://github.com/ail-and-colleagues/ThetaZ/blob/64ef82951a9aa8a7795c4d5df69c317105a167fd/tools/theta_z1/capture_gphoto2.sh#L113)。
+gphoto2はカメラ内のファイルを削除する際にフォルダの指定が要る。ひとまず[.sh内で直接指定しているので注意](https://github.com/ail-and-colleagues/ThetaZ/blob/68244f3a6123b80fbb366d40baac309c95657141/tools/theta_z1/capture_gphoto2.sh#L112-L113)。
 
-https://github.com/ail-and-colleagues/ThetaZ/blob/64ef82951a9aa8a7795c4d5df69c317105a167fd/tools/theta_z1/capture_gphoto2.sh#L113
+https://github.com/ail-and-colleagues/ThetaZ/blob/68244f3a6123b80fbb366d40baac309c95657141/tools/theta_z1/capture_gphoto2.sh#L112-L113
 
 また、evList.csvでの撮影の設定では、シャッタースピードの設定は0.1でなく1/10のように分数で表記する必要があるので注意。
 
