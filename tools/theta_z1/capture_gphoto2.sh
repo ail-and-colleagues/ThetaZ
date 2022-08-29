@@ -4,8 +4,8 @@
 DIRNAME=${1}
 
 #保存先ディレクトリの作成
-# DATE=`date '+%y%m%d_%H%M%S'`
-DATE="test"
+DATE=`date '+%y%m%d_%H%M%S'`
+# DATE="test"
 
 
 mkdir ${DIRNAME}/${DATE} 
@@ -58,23 +58,28 @@ do
 	col4=`echo ${line} | cut -d ',' -f 4`
 	col5=`echo ${line} | cut -d ',' -f 5`
 	col6=`echo ${line} | cut -d ',' -f 6`
+	# iso
 	# ptpcam --set-property=0x500f --val=${col4}
 	# gphoto2 - theta ではfilm speed ISOはbinaryでなく数値で渡す模様。
-	# gphoto2 --set-config iso=${col2}
-	# gphoto2 --get-config iso | grep -e Label -e Current
+	gphoto2 --set-config iso=${col2}
+	# gphoto2 --get-config iso | head -n 4
 	sleep 0.1
-	gphoto2 --set-config-index=d00f=0
-	gphoto2 --get-config d00f
 
-	echo -e -n ${col5} > val.bin
+	# shutterspeed 
+	# gphoto2 -theta ではssはbinaryでなく数値で渡す模様。  
+	# echo -e -n ${col5} > val.bin
 	# ptpcam -R 0x1016,0xd00f,0,0,0,0,val.bin
+	gphoto2 --set-config shutterspeed=${col3}
+	# gphoto2 --get-config shutterspeed | head -n 4
+	
 	echo
-	echo //// Getting Image of ${col1}, ${col4},  ${val}, ${col5} ////
+	echo //// Getting Image of ${col1}, ${col2}, ${col3} ////
 	sleep 0.1	
 	# ptpcam -c
+	gphoto2 --capture-image
 	sleep ${col6}	
 	echo ${col1}.DNG,${col1}.tiff,${col2},${col3} >> ${DIRNAME}/${DATE}/picInfo.csv
-	exit
+	# exit
 done < ${DIRNAME}/EVlist.csv
 
 #list.csvの書式
@@ -90,15 +95,22 @@ echo ${DIRNAME}/${DATE}, >> ${DIRNAME}/dirList.txt
 #撮影時のsysInfoを画像フォルダにコピー
 cp ${DIRNAME}/sysInfo.csv ${DIRNAME}/${DATE}/sysInfo.csv
 
+gphoto2 --list-files
+
 #画像のダウンロード
-ptpcam -G
+# ptpcam -G
+gphoto2 --get-all-files
 sudo chmod 777 *.DNG
 sudo chmod 777 *.JPG
-#画像のりネーム
+
+#画像のリネーム
 ls *.DNG | awk '{ printf "mv %s %02d.DNG\n", $0, NR }' | sh
 ls *.JPG | awk '{ printf "mv %s %02d.JPG\n", $0, NR }' | sh
 #画像の移動
 mv *.DNG ${DIRNAME}/${DATE}/
 mv *.JPG ${DIRNAME}/${DATE}/
-ptpcam -D
+# ptpcam -D
+gphoto2 --folder=/store_00020001/DCIM/101RICOH --delete-all-files
+
+
 
