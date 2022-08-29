@@ -22,21 +22,13 @@ sudo apt-get install automake autoconf pkg-config gettext libtool
 #### libgphoto2
 libgphoto2をダウンロード、解凍。
 ```
-wget -O "libgphoto2.zip" https://github.com/gphoto/libgphoto2/archive/refs/heads/master.zip .
+wget -O "libgphoto2.zip" https://github.com/ail-and-colleagues/libgphoto2/archive/refs/heads/master.zip .
 unzip ./libgphoto2.zip
 ```
 
-ホームディレクトリにフォルダ**libgphoto2-master**があるので、**camlibs>ptp>config.c**を右クリック>Text Editerで開く。10785行目に：
-```
-{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_PENTAX,  PTP_DTC_UINT64,  get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
-```
-という行がある（Ctrl+Fで検索可）ので、次のように直下に一行足して保存、閉じる。
-```
-{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_PENTAX,  PTP_DTC_UINT64, _get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
-{ N_("Shutter Speed"), "shutterspeed", PTP_DPC_RICOH_ShutterSpeed, PTP_VENDOR_MICROSOFT, PTP_DTC_UINT64, _get_Ricoh_ShutterSpeed, _put_Ricoh_ShutterSpeed },
-```
 
-ターミナルに戻り以下を実行し、ビルド・インストール。
+
+以下を実行し、ビルド・インストール。
 ```
 cd libgphoto2-master
 autoreconf --install --symlink
