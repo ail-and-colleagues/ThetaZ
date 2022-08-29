@@ -91,6 +91,16 @@ Choice: 1 1/20000
 
 よって、[RICOH THETA Development on Linux](https://codetricity.github.io/theta-linux/usb_api/)を参考に別途libptpを用意することを試行したがうまく動かず。詳細は[issue #1: libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)。
 
+## capture
+Theta Z1のgphoto2でのキャプチャバージョンを**capture_gphoto2.sh**として実装。
+gphoto2はカメラ内のファイルを削除する際にフォルダの指定が要る。ひとまず[.sh内で直接指定しているので注意](https://github.com/ail-and-colleagues/ThetaZ/blob/64ef82951a9aa8a7795c4d5df69c317105a167fd/tools/theta_z1/capture_gphoto2.sh#L113)。
+
+https://github.com/ail-and-colleagues/ThetaZ/blob/64ef82951a9aa8a7795c4d5df69c317105a167fd/tools/theta_z1/capture_gphoto2.sh#L113
+
+また、evList.csvでの撮影の設定では、シャッタースピードの設定は0.1でなく1/10のように分数で表記する必要があるので注意。
+
+使い方はオリジナルの**capture.sh**と同じで、`sudo capture_gphoto2.sh [画像親ディレクトリ]`。
+
 ## sidenote
 [PTPy](https://github.com/Parrot-Developers/sequoia-ptpy)なるPython向けのlibptp実装もあり。
 ただ、基本がlibptpなので[issue #1: libptp problem with Theta Z1/SC2](https://github.com/ail-and-colleagues/ThetaZ/issues/1)と同様のエラーが起きる。
